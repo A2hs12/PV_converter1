@@ -61,7 +61,7 @@ endif
 
 SHARE_DIR=""$(shell pwd)"/share"
 SHARE_INC="-isystem$(SHARE_DIR)/include" "-I/usr/X11R6/include"
-SHARE_LIB="-L$(SHARE_DIR)/$(PLATFORM)/lib" "$(SHARE_DIR)/$(PLATFORM)/lib/libtcl8.5.a" "-ldl" "-lX11" "-lXft" "-lpthread" "-lfontconfig" "$(SHARE_DIR)/$(PLATFORM)/lib/libtk8.5.a"  
+SHARE_LIB="-L$(SHARE_DIR)/$(PLATFORM)/lib" "$(SHARE_DIR)/$(PLATFORM)/lib/libtk8.5.a" "$(SHARE_DIR)/$(PLATFORM)/lib/libtcl8.5.a" "-ldl" "-lX11" "-lXft" "-lpthread" "-lfontconfig" "-lm" "-lz"
 
 time:
 	@echo ----------------------------------------------

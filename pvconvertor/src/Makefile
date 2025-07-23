@@ -5,11 +5,20 @@ CXX	= g++ -pipe $(CFLAGS) $(INCFLAGS) -Werror=return-type
 ASM = as -Qy
 LINKER = g++
 
-TARGET_NAME = $(TARGET_NAME)
+TARGET_NAME = pvconverter
 
 ifeq ($(strip $(SOURCE_ROOT)), )
 SOURCE_ROOT = .
 endif
+
+INCFLAGS += -I/home/ashamsi/Downloads/boost_1_88_0
+INCFLAGS += -I$(SOURCE_ROOT)/../share/include
+INCFLAGS += -I$(SOURCE_ROOT)/public/manager
+INCFLAGS += -I$(SOURCE_ROOT)
+INCFLAGS += -I/home/ashamsi/include
+
+# Add Tk libraries and ensure correct linking order
+LIBFLAGS += -L$(SOURCE_ROOT)/../share -ltk8.5 -ltcl8.5 -lX11 -lXft -ldl -lpthread -lm -lz -lfontconfig
 
 _SOURCES  = $(shell find $(SOURCE_ROOT) -type f \
 							"(" -name '*.cpp' -or -name '*.c' -or -name '*.cc' -or -name '*.cxx' ")" )

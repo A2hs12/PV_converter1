@@ -1,0 +1,14 @@
+VERILOG
+/* This is a simple PVS test file */
+
+LAYER Metal1;
+LAYER Metal2;
+
+OPERATION AND op1 Metal1 Metal2;
+
+RULE POLY_SPACE_CHECK {
+  LAYOUT POLY;
+  SPACING < 0.2;
+}
+
+END

@@ -1,0 +1,139 @@
+# PVS to SVRF Converter
+
+This document explains how to use the PVS to SVRF conversion functionality in the PV Converter tool.
+
+## Overview
+
+The PV Converter tool now supports bidirectional conversion between PVS and SVRF formats:
+- SVRF to PVS conversion (existing functionality)
+- PVS to SVRF conversion (new functionality)
+
+This allows for seamless translation between different physical verification rule formats used by various EDA tools.
+
+## Usage
+
+### Command Line Syntax
+
+```
+pvconverter -pvs2svrf -i input_pvs_file -o output_svrf_file
+```
+
+### Options
+
+- `-pvs2svrf`: Specifies that we're converting from PVS format to SVRF format
+- `-i input_pvs_file`: The input PVS rule file to convert
+- `-o output_svrf_file`: The output SVRF rule file to generate
+
+## Example
+
+### Input PVS File
+```
+VERSION 5.6 ;
+
+GLOBAL {
+  CELLNAME = "test_cell" ;
+  DATE = "2023/05/15" ;
+}
+
+LAYER metal1 ;
+  WIDTH 0.12 ;
+  SPACING 0.12 ;
+
+LAYER metal2 ;
+  WIDTH 0.14 ;
+  SPACING 0.14 ;
+
+VIA via1 metal1 metal2 ;
+  RECTANGLE 0.12 0.12 ;
+  ENCLOSURE 0.04 0.04 ;
+
+RULE metal1_rule {
+  LAYOUT metal1;
+  SPACING < 0.12;
+}
+```
+
+### Output SVRF File
+```
+// SVRF file generated from PVS
+
+LAYER metal1 ;
+LAYER metal2 ;
+
+CHECK metal1_rule
+  INTERNAL1 = metal1 ;
+  SPACE ( INTERNAL1 ) < 0.12 ;
+END_CHECK
+```
+
+## Testing
+
+We've provided scripts to test the PVS to SVRF conversion:
+
+### Windows
+
+```
+# Using PowerShell
+.\test_pvs2svrf.ps1
+
+# Using Batch
+test_pvs2svrf.bat
+```
+
+### Unix/Linux
+
+```bash
+# Make the script executable
+chmod +x test_pvs2svrf.sh
+
+# Run the test
+./test_pvs2svrf.sh
+```
+
+## Supported PVS Constructs
+
+The PVS to SVRF converter supports translation of the following PVS constructs:
+
+1. Layer definitions
+2. DRC rule statements
+   - Width rules
+   - Spacing rules
+   - Enclosure rules
+   - Extension rules
+   - Density rules
+3. Via definitions
+4. Global settings
+5. Cell properties
+
+## Implementation Details
+
+The converter uses a parser-based approach rather than simple text substitution:
+
+1. Tokenizes the PVS file using the lexical analyzer
+2. Parses tokens into an Abstract Syntax Tree (AST)
+3. Traverses the AST to generate equivalent SVRF code
+4. Preserves comments and formatting where possible
+5. Handles complex multi-line constructs correctly
+
+## Common Conversion Patterns
+
+| PVS Syntax | SVRF Syntax |
+|------------|-------------|
+| `LAYER metal1 ;` | `LAYER metal1 ;` |
+| `OPERATION AND layer1 layer2 layer3;` | `layer1 = AND ( layer2 layer3 ) ;` |
+| `RULE rule_name { ... }` | `CHECK rule_name ... END_CHECK` |
+| `LAYOUT metal1;` | `INTERNAL1 = metal1 ;` |
+| `SPACING < 0.12;` | `SPACE ( INTERNAL1 ) < 0.12 ;` |
+| `WIDTH >= 0.14;` | `WIDTH ( INTERNAL1 ) >= 0.14 ;` |
+
+## Limitations
+
+Current limitations of the PVS to SVRF conversion:
+- Custom TCL/TK functions in PVS may not convert accurately
+- Certain advanced DRC constructs may require manual adjustment
+- User-defined functions may need adaptation
+
+## See Also
+
+- [Original README](./readme.md) - General information about the PV Converter tool
+- [SVRF to PVS README](./svrf2pvs.readme) - Information about SVRF to PVS conversion
